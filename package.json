@@ -1,0 +1,29 @@
+{
+  "name": "e.target",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smilejin92/e.target.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smilejin92/e.target/issues"
+  },
+  "homepage": "https://github.com/smilejin92/e.target#readme",
+  "dependencies": {
+    "json-server": "^0.16.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-html": "^6.0.2",
+    "eslint-plugin-import": "^2.21.1"
+  }
+}
