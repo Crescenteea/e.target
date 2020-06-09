@@ -46,6 +46,9 @@ const navTabList = target => {
   render();
 };
 
+const removeTodo = target => {
+  todos = todos.filter(todo => +target.parentNode.id !== todo.id);
+};
 
 // 이벤트 핸들러 영역
 window.onload = getTodos;
@@ -53,4 +56,10 @@ window.onload = getTodos;
 $nav.onclick = ({ target }) => {
   if (!target.matches('.nav > li:not(.active)')) return;
   navTabList(target);
+};
+
+$todos.onclick = ({ target }) => {
+  if (!target.matches('.todos > li > i')) return;
+  removeTodo(target);
+  render();
 };
