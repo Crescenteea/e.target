@@ -9,6 +9,8 @@ const $clearCompleted = document.querySelector('.clear-completed > .btn');
 const $completedTodos = document.querySelector('.completed-todos');
 const $activeTodos = document.querySelector('.active-todos');
 const $inputTodo = document.querySelector('.input-todo');
+const $completeAll = document.getElementById('ck-complete-all');
+
 
 // 함수 영역
 const render = () => {
@@ -38,13 +40,14 @@ const getTodos = () => {
     { id: 1, content: 'HTML', completed: false },
     { id: 2, content: 'CSS', completed: true },
     { id: 3, content: 'Javascript', completed: false }
-  ];
+  ].sort((todo1, todo2) => todo2.id - todo1.id);
   render();
 };
 
-const generateId = () => Math.max(...todos.map(todo => todo.id)) + 1;
+const generateId = () => Math.max(0, ...todos.map(todo => todo.id)) + 1;
+
 const addTodo = content => {
-  todos = [...todos, { id: generateId(), content, completed: false }];
+  todos = [{ id: generateId(), content, completed: false }, ...todos];
 };
 
 const navTabList = target => {
@@ -59,6 +62,11 @@ const navTabList = target => {
 
 const removeTodo = target => {
   todos = todos.filter(todo => +target.parentNode.id !== todo.id);
+  if (!todos.length) $completeAll.checked = false;
+};
+
+const markAll = target => {
+  todos = todos.map(todo => ({ ...todo, completed: target.checked }));
 };
 
 
@@ -78,12 +86,27 @@ $todos.onclick = ({ target }) => {
 
 $clearCompleted.onclick = () => {
   todos = todos.filter(todo => !todo.completed);
+  if (!todos.length) $completeAll.checked = false;
   render();
 };
 
 $inputTodo.onkeyup = e => {
   if (e.keyCode !== 13 || e.target.value === '') return;
-  addTodo(e.target.value);
+  addTodo(e.target.value.trim());
   e.target.value = '';
+  render();
+};
+
+$todos.onchange = ({ target }) => {
+  todos = todos.map(todo => (+target.parentNode.id === todo.id
+    ? ({ ...todo, completed: !todo.completed })
+    : todo
+  ));
+  $completeAll.checked = todos.length === todos.filter(({ completed }) => completed).length;
+  render();
+};
+
+$completeAll.onchange = ({ target }) => {
+  markAll(target);
   render();
 };
