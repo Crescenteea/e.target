@@ -8,6 +8,7 @@ const $nav = document.querySelector('.nav');
 const $clearCompleted = document.querySelector('.clear-completed > .btn');
 const $completedTodos = document.querySelector('.completed-todos');
 const $activeTodos = document.querySelector('.active-todos');
+const $inputTodo = document.querySelector('.input-todo');
 
 // 함수 영역
 const render = () => {
@@ -41,6 +42,11 @@ const getTodos = () => {
   render();
 };
 
+const generateId = () => Math.max(...todos.map(todo => todo.id)) + 1;
+const addTodo = content => {
+ todos = [...todos, { id: generateId(), content, completed: false }];
+}
+
 const navTabList = target => {
   const navItem = [...$nav.children].filter($navItem => $navItem.matches('.active'));
   navItem[0].classList.remove('active');
@@ -72,5 +78,12 @@ $todos.onclick = ({ target }) => {
 
 $clearCompleted.onclick = () => {
   todos = todos.filter(todo => !todo.completed);
+  render();
+};
+
+$inputTodo.onkeyup = e => {
+  if (e.keyCode !== 13 || e.target.value === '') return;
+  addTodo(e.target.value);
+  e.target.value = '';
   render();
 };
