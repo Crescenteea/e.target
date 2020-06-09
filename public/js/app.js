@@ -1,7 +1,9 @@
 // 상태
 let todos = [];
 
+// DOM Nodes
 const $todos = document.querySelector('.todos');
+const $nav = document.querySelector('.nav');
 
 // 함수 영역
 const render = () => {
@@ -17,6 +19,14 @@ const render = () => {
   $todos.innerHTML = html;
 };
 
+const navTabList = target => {
+  const navItem = [...$nav.children].filter($navItem => $navItem.matches('.active'));
+  navItem[0].classList.remove('active');
+
+  target.classList.add('active');
+};
+
+// 이벤트 핸들러 영역
 window.onload = () => {
   todos = [
     { id: 1, content: 'HTML', completed: false },
@@ -25,4 +35,9 @@ window.onload = () => {
   ];
   console.log(todos);
   render();
+};
+
+$nav.onclick = ({ target }) => {
+  if (!target.matches('.nav > li:not(.active)')) return;
+  navTabList(target);
 };
