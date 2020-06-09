@@ -10,6 +10,7 @@ const $completedTodos = document.querySelector('.completed-todos');
 const $activeTodos = document.querySelector('.active-todos');
 const $inputTodo = document.querySelector('.input-todo');
 
+
 // 함수 영역
 const render = () => {
   const _todos = menu === 'active'
@@ -18,7 +19,7 @@ const render = () => {
       ? todos.filter(item => item.completed)
       : todos;
 
-  console.log(_todos);
+  // console.log(_todos);
 
   let html = '';
   _todos.forEach(({ id, content, completed }) => {
@@ -44,8 +45,8 @@ const getTodos = () => {
 
 const generateId = () => Math.max(...todos.map(todo => todo.id)) + 1;
 const addTodo = content => {
- todos = [...todos, { id: generateId(), content, completed: false }];
-}
+  todos = [...todos, { id: generateId(), content, completed: false }];
+};
 
 const navTabList = target => {
   const navItem = [...$nav.children].filter($navItem => $navItem.matches('.active'));
@@ -60,7 +61,6 @@ const navTabList = target => {
 const removeTodo = target => {
   todos = todos.filter(todo => +target.parentNode.id !== todo.id);
 };
-
 
 // 이벤트 핸들러 영역
 window.onload = getTodos;
@@ -85,5 +85,26 @@ $inputTodo.onkeyup = e => {
   if (e.keyCode !== 13 || e.target.value === '') return;
   addTodo(e.target.value);
   e.target.value = '';
+  render();
+};
+
+// 1. onchange가 발생하면
+// 2. target의 부모 아이디와 todo의 id가 일치하면
+// 3. 일치하는 요소만 completed의 값을 전환시킨다.
+
+$todos.onchange = ({ target }) => {
+  // console.log(target);
+  // todos.map(todo => ({ ...todo, completed: !todo.completed }));
+  // todos = todos.map(function (todo) {
+  //   if (+target.parentNode.id === todo.id) {
+  //     return ({ ...todo, completed: !todo.completed });
+  //   }
+  //   return todo;
+  // });
+  todos = todos.map(todo => (+target.parentNode.id === todo.id 
+    ? ({ ...todo, completed: !todo.completed })
+    : todo
+  ));
+  console.log(todos);
   render();
 };
