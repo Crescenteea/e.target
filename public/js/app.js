@@ -9,7 +9,8 @@ const $clearCompleted = document.querySelector('.clear-completed > .btn');
 const $completedTodos = document.querySelector('.completed-todos');
 const $activeTodos = document.querySelector('.active-todos');
 const $inputTodo = document.querySelector('.input-todo');
-const $completeAll = document.querySelector('.complete-all')
+const $completeAll = document.getElementById('ck-complete-all');
+
 
 // 함수 영역
 const render = () => {
@@ -43,11 +44,11 @@ const getTodos = () => {
   render();
 };
 
-const generateId = () => Math.max(...todos.map(todo => todo.id)) + 1;
+const generateId = () => Math.max(0, ...todos.map(todo => todo.id)) + 1;
 
 const addTodo = content => {
- todos = [{ id: generateId(), content, completed: false },...todos];
-}
+  todos = [{ id: generateId(), content, completed: false }, ...todos];
+};
 
 const navTabList = target => {
   const navItem = [...$nav.children].filter($navItem => $navItem.matches('.active'));
@@ -61,6 +62,7 @@ const navTabList = target => {
 
 const removeTodo = target => {
   todos = todos.filter(todo => +target.parentNode.id !== todo.id);
+  if (!todos.length) $completeAll.checked = false;
 };
 
 const markAll = target => {
@@ -84,6 +86,7 @@ $todos.onclick = ({ target }) => {
 
 $clearCompleted.onclick = () => {
   todos = todos.filter(todo => !todo.completed);
+  if (!todos.length) $completeAll.checked = false;
   render();
 };
 
@@ -94,9 +97,16 @@ $inputTodo.onkeyup = e => {
   render();
 };
 
-$completeAll.onchange = ({ target }) => {
- markAll(target);
- render();
+$todos.onchange = ({ target }) => {
+  todos = todos.map(todo => (+target.parentNode.id === todo.id
+    ? ({ ...todo, completed: !todo.completed })
+    : todo
+  ));
+  $completeAll.checked = todos.length === todos.filter(({ completed }) => completed).length;
+  render();
 };
 
-
+$completeAll.onchange = ({ target }) => {
+  markAll(target);
+  render();
+};
