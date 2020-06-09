@@ -9,6 +9,7 @@ const $clearCompleted = document.querySelector('.clear-completed > .btn');
 const $completedTodos = document.querySelector('.completed-todos');
 const $activeTodos = document.querySelector('.active-todos');
 const $inputTodo = document.querySelector('.input-todo');
+const $completeAll = document.getElementById('ck-complete-all');
 
 
 // 함수 영역
@@ -19,7 +20,7 @@ const render = () => {
       ? todos.filter(item => item.completed)
       : todos;
 
-  // console.log(_todos);
+  console.log(_todos);
 
   let html = '';
   _todos.forEach(({ id, content, completed }) => {
@@ -37,15 +38,16 @@ const render = () => {
 const getTodos = () => {
   todos = [
     { id: 1, content: 'HTML', completed: false },
-    { id: 2, content: 'CSS', completed: false },
+    { id: 2, content: 'CSS', completed: true },
     { id: 3, content: 'Javascript', completed: false }
-  ];
+  ].sort((todo1, todo2) => todo2.id - todo1.id);
   render();
 };
 
-const generateId = () => Math.max(...todos.map(todo => todo.id)) + 1;
+const generateId = () => Math.max(0, ...todos.map(todo => todo.id)) + 1;
+
 const addTodo = content => {
-  todos = [...todos, { id: generateId(), content, completed: false }];
+  todos = [{ id: generateId(), content, completed: false }, ...todos];
 };
 
 const navTabList = target => {
@@ -60,7 +62,13 @@ const navTabList = target => {
 
 const removeTodo = target => {
   todos = todos.filter(todo => +target.parentNode.id !== todo.id);
+  if (!todos.length) $completeAll.checked = false;
 };
+
+const markAll = target => {
+  todos = todos.map(todo => ({ ...todo, completed: target.checked }));
+};
+
 
 // 이벤트 핸들러 영역
 window.onload = getTodos;
@@ -78,33 +86,27 @@ $todos.onclick = ({ target }) => {
 
 $clearCompleted.onclick = () => {
   todos = todos.filter(todo => !todo.completed);
+  if (!todos.length) $completeAll.checked = false;
   render();
 };
 
 $inputTodo.onkeyup = e => {
   if (e.keyCode !== 13 || e.target.value === '') return;
-  addTodo(e.target.value);
+  addTodo(e.target.value.trim());
   e.target.value = '';
   render();
 };
 
-// 1. onchange가 발생하면
-// 2. target의 부모 아이디와 todo의 id가 일치하면
-// 3. 일치하는 요소만 completed의 값을 전환시킨다.
-
 $todos.onchange = ({ target }) => {
-  // console.log(target);
-  // todos.map(todo => ({ ...todo, completed: !todo.completed }));
-  // todos = todos.map(function (todo) {
-  //   if (+target.parentNode.id === todo.id) {
-  //     return ({ ...todo, completed: !todo.completed });
-  //   }
-  //   return todo;
-  // });
-  todos = todos.map(todo => (+target.parentNode.id === todo.id 
+  todos = todos.map(todo => (+target.parentNode.id === todo.id
     ? ({ ...todo, completed: !todo.completed })
     : todo
   ));
-  console.log(todos);
+  $completeAll.checked = todos.length === todos.filter(({ completed }) => completed).length;
+  render();
+};
+
+$completeAll.onchange = ({ target }) => {
+  markAll(target);
   render();
 };
