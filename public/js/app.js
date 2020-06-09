@@ -5,6 +5,7 @@ let menu = 'all';
 // DOM Nodes
 const $todos = document.querySelector('.todos');
 const $nav = document.querySelector('.nav');
+const $inputTodo = document.querySelector('.input-todo');
 
 // 함수 영역
 const render = () => {
@@ -36,6 +37,11 @@ const getTodos = () => {
   render();
 };
 
+const generateId = () => Math.max(...todos.map(todo => todo.id)) + 1;
+const addTodo = content => {
+ todos = [...todos, { id: generateId(), content, completed: false }];
+}
+
 const navTabList = target => {
   const navItem = [...$nav.children].filter($navItem => $navItem.matches('.active'));
   navItem[0].classList.remove('active');
@@ -53,4 +59,11 @@ window.onload = getTodos;
 $nav.onclick = ({ target }) => {
   if (!target.matches('.nav > li:not(.active)')) return;
   navTabList(target);
+};
+
+$inputTodo.onkeyup = e => {
+  if (e.keyCode !== 13 || e.target.value === '') return;
+  addTodo(e.target.value);
+  e.target.value = '';
+  render();
 };
