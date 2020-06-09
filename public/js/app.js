@@ -5,6 +5,9 @@ let menu = 'all';
 // DOM Nodes
 const $todos = document.querySelector('.todos');
 const $nav = document.querySelector('.nav');
+const $clearCompleted = document.querySelector('.clear-completed > .btn');
+const $completedTodos = document.querySelector('.completed-todos');
+const $activeTodos = document.querySelector('.active-todos');
 const $inputTodo = document.querySelector('.input-todo');
 
 // 함수 영역
@@ -26,12 +29,14 @@ const render = () => {
     </li>`;
   });
   $todos.innerHTML = html;
+  $completedTodos.textContent = todos.filter(todo => todo.completed).length;
+  $activeTodos.textContent = todos.filter(todo => !todo.completed).length;
 };
 
 const getTodos = () => {
   todos = [
     { id: 1, content: 'HTML', completed: false },
-    { id: 2, content: 'CSS', completed: true },
+    { id: 2, content: 'CSS', completed: false },
     { id: 3, content: 'Javascript', completed: false }
   ];
   render();
@@ -52,6 +57,10 @@ const navTabList = target => {
   render();
 };
 
+const removeTodo = target => {
+  todos = todos.filter(todo => +target.parentNode.id !== todo.id);
+};
+
 
 // 이벤트 핸들러 영역
 window.onload = getTodos;
@@ -59,6 +68,17 @@ window.onload = getTodos;
 $nav.onclick = ({ target }) => {
   if (!target.matches('.nav > li:not(.active)')) return;
   navTabList(target);
+};
+
+$todos.onclick = ({ target }) => {
+  if (!target.matches('.todos > li > i')) return;
+  removeTodo(target);
+  render();
+};
+
+$clearCompleted.onclick = () => {
+  todos = todos.filter(todo => !todo.completed);
+  render();
 };
 
 $inputTodo.onkeyup = e => {
