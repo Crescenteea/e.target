@@ -36,7 +36,7 @@ const render = () => {
 const getTodos = () => {
   todos = [
     { id: 1, content: 'HTML', completed: false },
-    { id: 2, content: 'CSS', completed: false },
+    { id: 2, content: 'CSS', completed: true },
     { id: 3, content: 'Javascript', completed: false }
   ];
   render();
@@ -44,8 +44,8 @@ const getTodos = () => {
 
 const generateId = () => Math.max(...todos.map(todo => todo.id)) + 1;
 const addTodo = content => {
- todos = [...todos, { id: generateId(), content, completed: false }];
-}
+  todos = [...todos, { id: generateId(), content, completed: false }];
+};
 
 const navTabList = target => {
   const navItem = [...$nav.children].filter($navItem => $navItem.matches('.active'));
